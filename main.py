@@ -1,15 +1,32 @@
 from turtle import speed
 import random
-import pygame # Импорт модуля пайгейм
+import pygame  # Импорт модуля пайгейм
 
 pygame.init()
+
+ping = pygame.mixer.Sound("loose.mp3")
+loose = pygame.mixer.Sound("loose.mp3")
+ling = pygame.mixer.Sound("ball.mp3")
+ball = pygame.mixer.Sound("ball.mp3")
+
 
 width = 1366
 height = 768
 fps = 60
 gameName = 'First Project'
 
-screen = pygame.display.set_mode((width, height)) # Создание экрана с заданными размера
+screen = pygame.display.set_mode((width, height))  # Создание экрана с заданными размера
+
+
+def draw_text(screen, text, size, x, y, color):
+    font_name =pygame.font.match_font('arial')
+    font = pygame.font.Font(font_name, size)
+    text_image = font.render(text, True, color)
+    text_rect = text_image.get_rect()
+    text_rect.center = (x, y)
+    screen.blit(text_image, text_rect)
+
+
 
 BLACK = '#000000'
 WHITE = '#FFFFFF'
@@ -17,6 +34,8 @@ RED = '#FF0000'
 GREEN = '#008000'
 BLUE = '#0000FF'
 CYAN = '#00FFFF'
+score = 0
+game_rounds = 3
 
 img = pygame.image.load('img.png')
 img = pygame.transform.scale(img, (50, 50))
@@ -44,6 +63,10 @@ while run:
     screen.blit(img, img_rect)
     screen.blit(platform, platform_rect)
 
+
+    draw_text(screen,'score: ' + str(score), 50, width // 2, 40, WHITE)
+    draw_text(screen, 'rounds: ' + str(score), 50, 1250, 40, WHITE)
+
     img_rect.x += speedX
     img_rect.y += speedY
 
@@ -53,6 +76,8 @@ while run:
         platform_rect.x += 10
 
     if img_rect.colliderect(platform_rect):
+        ling.play()
+        score = score + 1
         speedY = -speedY
 
     if img_rect.top < 0:
@@ -62,8 +87,12 @@ while run:
     if img_rect.right > width:
         speedX = -speedX
     if img_rect.bottom > height:
-        #run = False
-        img_rect.x =random.randint(100, width - 100)
+        # run = False
+        img_rect.x = random.randint(100, width - 100)
         img_rect.y = 100
+        game_rounds -= 1
+        loose.play()
+    if game_rounds < 1:
+        run = False
     pygame.display.update()
 pygame.quit()
