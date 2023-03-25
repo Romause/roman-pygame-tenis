@@ -1,6 +1,7 @@
 from turtle import speed
 import random
 import pygame  # Импорт модуля пайгейм
+import ball
 
 pygame.init()
 
@@ -37,11 +38,13 @@ GREEN = '#008000'
 BLUE = '#0000FF'
 CYAN = '#00FFFF'
 score = 0
-game_rounds = 3
+round = 3
 
-ball1 = pygame.image.load('img.png')
-ball1 = pygame.transform.scale(ball1, (50, 50))
-ball1_rect = ball1.get_rect()
+ball1 = ball.Ball()
+ball2 = ball.Ball()
+ball3 = ball.Ball()
+
+balls = [ball1, ball2, ball3]
 
 platform = pygame.image.load('platform.png')
 platform_rect = platform.get_rect()
@@ -49,8 +52,6 @@ platform_rect = platform.get_rect()
 platform_rect.x = width / 2 - platform.get_width() / 2
 platform_rect.y = height - 60
 
-speedX = 10
-speedY = 10
 
 clock = pygame.time.Clock()
 run = True
@@ -62,41 +63,28 @@ while run:
     key = pygame.key.get_pressed()
 
     screen.fill(CYAN)
-    screen.blit(ball1, ball1_rect)
+    for ball in balls:
+        ball.update(width, screen)
+        if platform_rect.colliderect(ball.rect):
+            score += 1
+            ball.speed[1] = -ball.speed[1]
+        if ball.rect.bottom > height:
+            round = round - 1
+            if round <= 0:
+                run = False
+            ball.respawn(width)
+
     screen.blit(platform, platform_rect)
 
 
     draw_text(screen,'score: ' + str(score), 50, width // 2, 40, BLACK)
-    draw_text(screen, 'rounds: ' + str(game_rounds), 50, 1250, 40, BLACK)
-
-    ball1_rect.x += speedX
-    ball1_rect.y += speedY
-
-
+    draw_text(screen, 'rounds: ' + str(round), 50, 1250, 40, BLACK)
 
     if key[pygame.K_LEFT] and platform_rect.left > 0:
-        platform_rect.x -= 10
+        platform_rect.x -= 30
     if key[pygame.K_RIGHT] and platform_rect.right < width:
-        platform_rect.x += 10
+        platform_rect.x += 30
 
-    if ball1_rect.colliderect(platform_rect):
-        ping.play()
-        score = score + 1
-        speedY = -speedY
 
-    if ball1_rect.top < 0:
-        speedY = -speedY
-    if ball1_rect.left < 0:
-        speedX = -speedX
-    if ball1_rect.right > width:
-        speedX = -speedX
-    if ball1_rect.bottom > height:
-        # run = False
-        ball1_rect.x = random.randint(100, width - 100)
-        ball1_rect.y = 100
-        game_rounds = game_rounds - 1
-        loose.play()
-    if game_rounds < 1:
-        run = False
     pygame.display.update()
 pygame.quit()
