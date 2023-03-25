@@ -10,6 +10,9 @@ pygame.mixer.music.load("fon.mp3")
 pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play(-1)
 
+pygame.mixer.music.load("fon.mp3")
+pygame.mixer.music.play(-1)
+
 width = 1366
 height = 768
 fps = 60
