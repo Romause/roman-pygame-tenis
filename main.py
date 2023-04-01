@@ -2,6 +2,7 @@ from turtle import speed
 import random
 import pygame  # Импорт модуля пайгейм
 import ball
+import platform
 
 pygame.init()
 
@@ -44,7 +45,11 @@ ball1 = ball.Ball()
 ball2 = ball.Ball()
 ball3 = ball.Ball()
 
+
 balls = [ball1, ball2, ball3]
+
+
+
 
 platform = pygame.image.load('platform.png')
 platform_rect = platform.get_rect()
@@ -70,7 +75,7 @@ while run:
             ball.speed[1] = -ball.speed[1]
         if ball.rect.bottom > height:
             round = round - 1
-            if round <= 0:
+            if round == 0:
                 run = False
             ball.respawn(width)
 
